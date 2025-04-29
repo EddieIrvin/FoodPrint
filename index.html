@@ -1,16 +1,375 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<title>无标题文档</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#5ab9ea">
+    <title>食途|FoodPrint</title>
+    <style>
+        /* ========== 核心变量 ========== */
+        :root {
+            /* 导航系统 */
+            --xd-blue: #5ab9ea;
+            --xd-gray: #707070;
+            --xd-white: #fff;
+            --nav-height: 89px;
+            --menu-speed: 0.3s;
+
+            /* 内容系统 */
+            --content-padding: 40px;
+            --card-radius: 12px;
+            --grid-gap: 20px;
+        }
+
+        /* ========== 基础重置 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--nav-height);
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: 'CustomSans', Arial, sans-serif;
+        }
+
+        /* ========== 导航系统 (v4.0) ========== */
+        .navbar {
+            width: 100%;
+            height: var(--nav-height);
+            background: var(--xd-blue);
+            display: flex;
+            align-items: center;
+            padding: 0 45px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .hamburger {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--xd-gray);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            background: var(--xd-blue);
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            display: none;
+        }
+
+        .hamburger-line {
+            position: absolute;
+            left: 7px;
+            width: 37px;
+            height: 5px;
+            background: var(--xd-gray);
+            border-radius: 2.5px;
+            transition: all var(--menu-speed) cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transform-origin: 18.5px 2.5px;
+            will-change: transform, opacity;
+        }
+
+        .hamburger-line:nth-child(1) { top: 8px; }
+        .hamburger-line:nth-child(2) { top: 22px; }
+        .hamburger-line:nth-child(3) { top: 36px; }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: translateY(14px) rotate(45deg);
+        }
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: translateY(-14px) rotate(-45deg);
+        }
+
+        .nav-menu {
+            margin-left: auto;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            gap: 35px;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            color: var(--xd-white);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-menu a:focus,
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.15);
+            outline: none;
+        }
+
+        .nav-menu a:active {
+            transform: scale(0.95);
+        }
+
+        .logo {
+            color: var(--xd-white);
+            font: 40px/1 'Impact', sans-serif;
+            letter-spacing: 0.15em;
+            user-select: none;
+        }
+
+        /* ========== 内容系统 ========== */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 100px auto 0;
+            padding: var(--content-padding);
+            animation: contentFade 1s ease forwards;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .article-section {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--grid-gap);
+            margin-top: 30px;
+        }
+
+        .grid-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            aspect-ratio: 4/3;
+            background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+            background-size: 200% 100%;
+            animation: 1.5s shine linear infinite;
+            contain: strict;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        /* ========== 动画系统 ========== */
+        @keyframes contentFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shine {
+            to { background-position-x: -200%; }
+        }
+
+        .loading-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: var(--xd-blue);
+            display: none;
+        }
+
+        .loading-text::after {
+            content: '';
+            animation: loadingDots 1.5s infinite;
+        }
+
+        @keyframes loadingDots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        /* ========== 响应式优化 ========== */
+        @media (max-width: 768px) {
+            .navbar { padding: 0 20px; }
+            .hamburger { display: block; }
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--xd-blue);
+                padding: 20px;
+                transform: translateY(-20px);
+                opacity: 0;
+                visibility: hidden;
+                transition: all var(--menu-speed) ease;
+            }
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            .nav-menu ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .logo {
+                font-size: 28px;
+                margin-left: 20px;
+            }
+            .content-wrapper {
+                padding: 20px;
+                margin-top: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 24px;
+                margin-left: 15px;
+            }
+            .nav-menu ul {
+                gap: 10px;
+            }
+        }
+
+        /* ========== 字体定义 ========== */
+        @font-face {
+            font-family: 'CustomSans';
+            src: url('font.woff2') format('woff2');
+            font-display: swap;
+        }
+    </style>
 </head>
-
 <body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <button class="hamburger" id="hamburger" aria-label="主菜单" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+        <h1 class="logo">食途|FoodPrint</h1>
+        <div class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="https://eddieirvin.github.io/Foodprint/">食途|FoodPrint</a></li>
+                <li><a href="https://eddieirvin.github.io/">EddieIrvin的主页</a></li>
+                <li><a href="#work">GitHub上的页面</a></li>
+            </ul>
+        </div>
+    </nav>
 
+    <!-- 加载动画 -->
+    <div class="loading-text">Loading</div>
 
+    <!-- 正文内容 -->
+    <main class="content-wrapper">
+        <section class="article-section">
+            <h1>最新作品</h1>
+            <p>探索创意与技术的完美结合...</p>
+            
+            <div class="image-grid">
+                <div class="grid-item">
+                    <img data-src="real-image1.jpg" src="placeholder.jpg" alt="设计作品1" loading="lazy">
+                </div>
+                <div class="grid-item">
+                    <img data-src="real-image2.jpg" src="placeholder.jpg" alt="设计作品2" loading="lazy">
+                </div>
+                <div class="grid-item">
+                    <img data-src="real-image3.jpg" src="placeholder.jpg" alt="设计作品3" loading="lazy">
+                </div>
+            </div>
+        </section>
+    </main>
 
-<h1>Eddie Liu的个人主页&nbsp;</h1><hr>
-<h2>蹭饭图网址&nbsp;</h2><a href="202010.html">202010</a>
-<a href="201713.html">201713</a>
+    <script defer>
+        // 导航交互
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        
+        const toggleMenu = (state) => {
+            const isExpanded = state ?? hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active', isExpanded);
+            hamburger.setAttribute('aria-expanded', isExpanded);
+        };
+
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMenu();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                toggleMenu(false);
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                toggleMenu(false);
+            }
+        });
+
+        // 图片懒加载
+        const lazyLoad = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    observer.unobserve(img);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(lazyLoad, {
+            rootMargin: '200px 0px',
+            threshold: 0.01
+        });
+
+        // 内容加载管理
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loading-text');
+            const content = document.querySelector('.content-wrapper');
+            
+            loader.style.display = 'block';
+            
+            // 模拟内容加载
+            setTimeout(() => {
+                loader.style.display = 'none';
+                content.style.visibility = 'visible';
+                content.style.opacity = 1;
+                
+                // 启动图片懒加载
+                document.querySelectorAll('.grid-item img[data-src]').forEach(img => {
+                    observer.observe(img);
+                });
+            }, 1000);
+        });
+
+        // 响应式处理
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                toggleMenu(false);
+            }
+        });
+    </script>
 </body>
 </html>
