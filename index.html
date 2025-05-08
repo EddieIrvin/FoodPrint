@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#ea945a">
     <title>食途|FoodPrint</title>
+    
+    <!-- Leaflet 地图库 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
     <style>
         /* ========== 核心变量 ========== */
         :root {
-            /* 导航系统 */
-            --primary-color: #ea945a;  /* 主色改为橙色 */
+            --primary-color: #ea945a;
             --xd-gray: #707070;
             --xd-white: #fff;
             --nav-height: 89px;
             --menu-speed: 0.3s;
-
-            /* 内容系统 */
             --content-padding: 40px;
             --card-radius: 12px;
-            --grid-gap: 20px;
+            --map-height: 600px;
         }
 
         /* ========== 基础重置 ========== */
@@ -38,7 +39,7 @@
             font-family: 'YuGothicUI-Regular', system-ui, -apple-system, sans-serif;
         }
 
-        /* ========== 导航系统 (v4.0) ========== */
+        /* ========== 导航系统 ========== */
         .navbar {
             width: 100%;
             height: var(--nav-height);
@@ -75,7 +76,6 @@
             border-radius: 2.5px;
             transition: all var(--menu-speed) cubic-bezier(0.68, -0.55, 0.27, 1.55);
             transform-origin: 18.5px 2.5px;
-            will-change: transform, opacity;
         }
 
         .hamburger-line:nth-child(1) { top: 8px; }
@@ -113,14 +113,8 @@
             border-radius: 6px;
         }
 
-        .nav-menu a:focus,
         .nav-menu a:hover {
             background: rgba(255,255,255,0.15);
-            outline: none;
-        }
-
-        .nav-menu a:active {
-            transform: scale(0.95);
         }
 
         .logo {
@@ -128,18 +122,9 @@
             font: 40px/1 'YuGothicUI-Regular', sans-serif;
             letter-spacing: 0.15em;
             user-select: none;
-            position: relative;
-            padding-right: 12px;
         }
 
-        .logo::after {
-            content: "|FoodPrint";
-            font-family: 'Impact', sans-serif;
-            margin-left: 8px;
-            letter-spacing: normal;
-        }
-
-        /* ========== 内容系统 ========== */
+        /* ========== 内容区域 ========== */
         .content-wrapper {
             max-width: 1200px;
             margin: 100px auto 0;
@@ -157,64 +142,23 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--grid-gap);
-            margin-top: 30px;
-        }
-
-        .grid-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            aspect-ratio: 4/3;
-            background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-            background-size: 200% 100%;
-            animation: 1.5s shine linear infinite;
-            contain: strict;
-        }
-
-        .grid-item img {
+        /* ========== 地图容器 ========== */
+        #chinaMap {
+            height: var(--map-height);
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+            border-radius: var(--card-radius);
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: #f0f0f0;
         }
 
-        /* ========== 动画系统 ========== */
+        /* ========== 动画 ========== */
         @keyframes contentFade {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes shine {
-            to { background-position-x: -200%; }
-        }
-
-        .loading-text {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: var(--primary-color);
-            display: none;
-        }
-
-        .loading-text::after {
-            content: '';
-            animation: loadingDots 1.5s infinite;
-        }
-
-        @keyframes loadingDots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
-        }
-
-        /* ========== 响应式优化 ========== */
+        /* ========== 响应式设计 ========== */
         @media (max-width: 768px) {
             .navbar { padding: 0 20px; }
             .hamburger { display: block; }
@@ -239,40 +183,19 @@
                 flex-direction: column;
                 gap: 15px;
             }
-            .logo {
-                font-size: 28px;
-                margin-left: 20px;
-            }
-            .content-wrapper {
-                padding: 20px;
-                margin-top: 80px;
-            }
+            .logo { font-size: 28px; }
+            #chinaMap { height: 400px; }
         }
 
         @media (max-width: 480px) {
-            .logo {
-                font-size: 24px;
-                margin-left: 15px;
-            }
-            .nav-menu ul {
-                gap: 10px;
-            }
-        }
-
-        /* ========== 字体定义 ========== */
-        @font-face {
-            font-family: 'YuGothicUI-Regular';
-            src: local('Yu Gothic UI Regular'), 
-                 local('YuGothic-Regular'),
-                 url('fonts/YuGothicUI-Regular.woff2') format('woff2');
-            font-display: swap;
+            #chinaMap { height: 300px; }
         }
     </style>
 </head>
 <body>
     <!-- 导航栏 -->
     <nav class="navbar">
-        <button class="hamburger" id="hamburger" aria-label="主菜单" aria-expanded="false">
+        <button class="hamburger" id="hamburger" aria-label="菜单">
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
@@ -280,102 +203,95 @@
         <h1 class="logo">食途</h1>
         <div class="nav-menu" id="navMenu">
             <ul>
-                <li><a href="https://eddieirvin.github.io/">首页</a></li>
-                <li><a href="https://eddieirvin.github.io/FoodPrint/">探索地图</a></li>
+                <li><a href="/">首页</a></li>
+                <li><a href="#map">美食地图</a></li>
                 <li><a href="#recipes">食谱库</a></li>
-                <li><a href="#contact">联系我们</a></li>
+                <li><a href="#contact">联系</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- 加载动画 -->
-    <div class="loading-text">Loading</div>
-
-    <!-- 正文内容 -->
+    <!-- 主要内容 -->
     <main class="content-wrapper">
         <section class="article-section">
-            <h2>最新美食发现</h2>
-            <p>探索城市中的隐藏美味...</p>
-            
-            <div class="image-grid">
-                <div class="grid-item">
-                    <img data-src="food-image1.jpg" src="placeholder.jpg" alt="东京拉面探店" loading="lazy">
-                </div>
-                <div class="grid-item">
-                    <img data-src="food-image2.jpg" src="placeholder.jpg" alt="巴黎甜品地图" loading="lazy">
-                </div>
-                <div class="grid-item">
-                    <img data-src="food-image3.jpg" src="placeholder.jpg" alt="上海本帮菜指南" loading="lazy">
-                </div>
-            </div>
+            <h2>全国美食地图</h2>
+            <div id="chinaMap"></div>
         </section>
     </main>
 
-    <script defer>
-        // 保持原有JavaScript代码不变
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // 页面加载完成后初始化
+        window.addEventListener('load', () => {
+            // 初始化地图
+            const map = L.map('chinaMap', {
+                zoomControl: false,
+                attributionControl: false
+            }).setView([35.8617, 104.1954], 4);
+
+            // 使用高德地图
+            L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}', {
+                subdomains: ['1','2','3','4'],
+                maxZoom: 18,
+                minZoom: 3
+            }).addTo(map);
+
+            // 添加缩放控件
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+            // 自定义图标
+            const foodIcon = L.icon({
+                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                iconSize: [32, 32],
+                popupAnchor: [0, -16]
+            });
+
+            // 示例数据
+            const shops = [
+                { name: "北京全聚德", latlng: [39.9042, 116.4074], info: "📍 前门大街30号<br>🕒 10:00-21:00" },
+                { name: "广州陶陶居", latlng: [23.1193, 113.2580], info: "📍 第十甫路20号<br>🥟 招牌虾饺" },
+                { name: "成都陈麻婆", latlng: [30.6607, 104.0633], info: "📍 西玉龙街197号<br>🌶️ 麻婆豆腐" }
+            ];
+
+            // 添加标记
+            shops.forEach(shop => {
+                L.marker(shop.latlng, { icon: foodIcon })
+                    .bindPopup(`
+                        <div style="min-width:200px;padding:8px;font-family:system-ui;">
+                            <h3 style="margin:0 0 6px;color:${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}">
+                                ${shop.name}
+                            </h3>
+                            <p style="margin:0;font-size:14px;">${shop.info}</p>
+                        </div>
+                    `)
+                    .addTo(map);
+            });
+
+            // 移动端适配
+            if (window.innerWidth <= 768) {
+                map.setView([35.8617, 104.1954], 3);
+            }
+
+            // 显示内容区域
+            document.querySelector('.content-wrapper').style.visibility = 'visible';
+            document.querySelector('.content-wrapper').style.opacity = 1;
+        });
+
+        // 汉堡菜单交互
         const hamburger = document.getElementById('hamburger');
         const navMenu = document.getElementById('navMenu');
-        
-        const toggleMenu = (state) => {
-            const isExpanded = state ?? hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active', isExpanded);
-            hamburger.setAttribute('aria-expanded', isExpanded);
-        };
 
-        hamburger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleMenu();
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
         });
 
+        // 点击外部关闭菜单
         document.addEventListener('click', (e) => {
             if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-                toggleMenu(false);
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-                toggleMenu(false);
-            }
-        });
-
-        // 图片懒加载
-        const lazyLoad = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                    observer.unobserve(img);
-                }
-            });
-        };
-
-        const observer = new IntersectionObserver(lazyLoad, {
-            rootMargin: '200px 0px',
-            threshold: 0.01
-        });
-
-        window.addEventListener('load', () => {
-            const loader = document.querySelector('.loading-text');
-            const content = document.querySelector('.content-wrapper');
-            
-            loader.style.display = 'block';
-            
-            setTimeout(() => {
-                loader.style.display = 'none';
-                content.style.visibility = 'visible';
-                content.style.opacity = 1;
-                
-                document.querySelectorAll('.grid-item img[data-src]').forEach(img => {
-                    observer.observe(img);
-                });
-            }, 1000);
-        });
-
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                toggleMenu(false);
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
             }
         });
     </script>
