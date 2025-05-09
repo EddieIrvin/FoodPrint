@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#ea945a">
     <title>食途|FoodPrint</title>
-    
-    <!-- Leaflet 地图库 -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <style>
         /* ========== 核心变量 ========== */
-        :root
-        {
+        :root {
             --primary-color: #ea945a;
             --xd-gray: #707070;
             --xd-white: #fff;
@@ -24,28 +20,24 @@
         }
 
         /* ========== 基础重置 ========== */
-        *
-        {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html
-        {
+        html {
             scroll-behavior: smooth;
             scroll-padding-top: var(--nav-height);
         }
 
-        body
-        {
+        body {
             background: #f8f9fa;
-            font-family: 'YuGothicUI-Regular', system-ui, -apple-system, sans-serif;
+            font-family: '微软雅黑', sans-serif;
         }
 
         /* ========== 导航系统 ========== */
-        .navbar
-        {
+        .navbar {
             width: 100%;
             height: var(--nav-height);
             background: var(--primary-color);
@@ -58,8 +50,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .hamburger
-        {
+        .hamburger {
             width: 50px;
             height: 50px;
             border: 1px solid var(--xd-gray);
@@ -73,8 +64,7 @@
             display: none;
         }
 
-        .hamburger-line
-        {
+        .hamburger-line {
             position: absolute;
             left: 7px;
             width: 37px;
@@ -83,51 +73,35 @@
             border-radius: 2.5px;
             transition: all var(--menu-speed) cubic-bezier(0.68, -0.55, 0.27, 1.55);
             transform-origin: 18.5px 2.5px;
-            will-change: transform, opacity;
         }
 
-        .hamburger-line:nth-child(1)
-        {
-            top: 8px;
-        }
-        .hamburger-line:nth-child(2)
-        {
-            top: 22px;
-        }
-        .hamburger-line:nth-child(3)
-        {
-            top: 36px;
-        }
+        .hamburger-line:nth-child(1) { top: 8px; }
+        .hamburger-line:nth-child(2) { top: 22px; }
+        .hamburger-line:nth-child(3) { top: 36px; }
 
-        .hamburger.active .hamburger-line:nth-child(1)
-        {
+        .hamburger.active .hamburger-line:nth-child(1) {
             transform: translateY(14px) rotate(45deg);
         }
-        .hamburger.active .hamburger-line:nth-child(2)
-        {
+        .hamburger.active .hamburger-line:nth-child(2) {
             opacity: 0;
             transform: translateX(-100%);
         }
-        .hamburger.active .hamburger-line:nth-child(3)
-        {
+        .hamburger.active .hamburger-line:nth-child(3) {
             transform: translateY(-14px) rotate(-45deg);
         }
 
-        .nav-menu
-        {
+        .nav-menu {
             margin-left: auto;
         }
 
-        .nav-menu ul
-        {
+        .nav-menu ul {
             list-style: none;
             display: flex;
             gap: 35px;
             padding: 0;
         }
 
-        .nav-menu a
-        {
+        .nav-menu a {
             color: var(--xd-white);
             text-decoration: none;
             font-size: 1.2rem;
@@ -136,87 +110,68 @@
             border-radius: 6px;
         }
 
-        .nav-menu a:focus,
-        .nav-menu a:hover
-        {
+        .nav-menu a:hover {
             background: rgba(255,255,255,0.15);
         }
-        
-        .nav-menu a:active
-        {
-            transform: scale(0.95);
-        }
 
-        .logo
-        {
+        .logo {
             color: var(--xd-white);
             font: 40px/1 'Impact', sans-serif;
             letter-spacing: 0.15em;
             user-select: none;
         }
-        
-        .leaflet-popup-content
-        {
+
+        /* ========== 地图弹窗样式 ========== */
+        .leaflet-popup-content {
             margin: 12px !important;
         }
-        
-        .shop-popup
-        {
-            min-width: 260px;
+
+        .shop-popup {
+            min-width: 320px;
             font-family: '微软雅黑', sans-serif;
         }
-        
-        .shop-title
-        {
+
+        .shop-title {
             color: var(--primary-color);
             margin: 0 0 10px;
-            font-size: 1.2em;
+            font-size: 1.3em;
             font-weight: bold;
         }
-        
-        .info-item
-        {
-            margin: 8px 0;
+
+        .info-item {
+            margin: 12px 0;
             display: flex;
             align-items: start;
         }
-        
-        .info-icon
-        {
-            width: 18px;
-            margin-right: 8px;
+
+        .info-icon {
+            width: 20px;
+            margin-right: 10px;
             filter: hue-rotate(190deg);
         }
-        
-        .dishes-list
-        {
-            margin: 5px 0;
+
+        .dishes-list {
+            margin: 8px 0 12px;
             color: #666;
         }
-        
-        .update-time
-        {
-            margin-top: 12px;
-            padding-top: 10px;
+
+        .update-time {
+            margin-top: 15px;
+            padding-top: 12px;
             color: #999;
             font-size: 0.9em;
             border-top: 1px solid #eee;
         }
 
         /* ========== 内容区域 ========== */
-        .content-wrapper
-        {
+        .content-wrapper {
             margin: 100px auto 0;
             padding: var(--content-padding);
             width: 100%;
-            height: 100%;
             animation: contentFade 1s ease forwards;
-            opacity: 0;
-            visibility: hidden;
         }
 
-        .article-section
-        {
+        .article-section {
             background: white;
             border-radius: var(--card-radius);
             padding: 30px;
@@ -224,36 +179,27 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        /* ========== 地图容器 ========== */
-        #chinaMap
-        {
+        #chinaMap {
             height: var(--map-height);
             border-radius: var(--card-radius);
-            margin: 10px 0;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            background: #f0f0f0;
         }
 
         /* ========== 动画 ========== */
-        @keyframes contentFade
-        {
+        @keyframes contentFade {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         /* ========== 响应式设计 ========== */
-        @media (max-width: 768px)
-        {
-            .navbar
-            {
+        @media (max-width: 768px) {
+            .navbar {
                 padding: 0 20px;
             }
-            .hamburger
-            {
+            .hamburger {
                 display: block;
             }
-            .nav-menu
-            {
+            .nav-menu {
                 position: absolute;
                 top: 100%;
                 left: 0;
@@ -265,67 +211,31 @@
                 visibility: hidden;
                 transition: all var(--menu-speed) ease;
             }
-            .nav-menu.active
-            {
+            .nav-menu.active {
                 transform: translateY(0);
                 opacity: 1;
                 visibility: visible;
             }
-            .nav-menu ul
-            {
+            .nav-menu ul {
                 flex-direction: column;
                 gap: 15px;
             }
-            .logo
-            {
+            .logo {
                 font-size: 28px;
                 margin-left: 20px;
             }
-            .content-wrapper
-            {
-                margin: 100px auto 0;
-                padding: 5px;
-                width: 100%;
-                height: 100%;
-                animation: contentFade 1s ease forwards;
-                opacity: 0;
-                visibility: hidden;
-            }
-            #chinaMap
-            {
-                padding: 0;
+            #chinaMap {
                 height: 520px;
-                width: 100%;
             }
         }
 
-        @media (max-width: 480px)
-        {
-            .logo
-            {
-                font-size: 24pz;
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 24px;
                 margin-left: 15px;
             }
-            .nav-menu ul
-            {
-                gap: 10pz;
-            }
-            
-            .content-wrapper
-            {
-                margin: 100px auto 0;
-                padding: 5px;
-                width: 100%;
-                height: 100%;
-                animation: contentFade 1s ease forwards;
-                opacity: 0;
-                visibility: hidden;
-            }
-            #chinaMap
-            {
-                padding: 0;
-                height: 520px;
-                width: 100%;
+            .shop-popup {
+                min-width: 260px;
             }
         }
     </style>
@@ -360,16 +270,12 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         window.addEventListener('load', async () => {
-            const map = L.map('chinaMap', {
-                zoomControl: false,
-                attributionControl: false
-            }).setView([35.8617, 104.1954], 4);
-
+            const map = L.map('chinaMap', { zoomControl: false }).setView([35.8617, 104.1954], 4);
+            
             // 地图图层
             L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}', {
                 subdomains: ['1','2','3','4'],
-                maxZoom: 18,
-                minZoom: 3
+                maxZoom: 18
             }).addTo(map);
 
             // 自定义图标
@@ -382,73 +288,70 @@
             try {
                 const response = await fetch('data-shops.json');
                 const shops = await response.json();
-
+                
+                // 添加标记
                 shops.forEach(shop => {
                     const popupContent = `
                         <div class="shop-popup">
                             <h3 class="shop-title">${shop.name}</h3>
-                            
                             <div class="info-item">
-                                <img src="https://cdn-icons-png.flaticon.com/512/149/149060.png" 
-                                     class="info-icon">
+                                <img src="https://cdn-icons-png.flaticon.com/512/149/149060.png" class="info-icon">
                                 ${shop.address}
                             </div>
-                            
                             <div class="info-item">
-                                <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" 
-                                     class="info-icon">
-                                <div>
-                                    <div style="color:${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}">
-                                        推荐菜品：
-                                    </div>
-                                    <div class="dishes-list">
-                                        ${shop.dishes.split(',').map(d => `• ${d.trim()}`).join('<br>')}
-                                    </div>
+                                <img src="https://cdn-icons-png.flaticon.com/512/484/484613.png" class="info-icon">
+                                ${shop.cuisine || "暂无分类"}
+                            </div>
+                            <div class="info-item">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="info-icon">
+                                <div>${shop.recommendation || "暂无推荐理由"}</div>
+                            </div>
+                            <div class="info-item">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" class="info-icon">
+                                <div style="color:var(--primary-color)">推荐菜品：</div>
+                                <div class="dishes-list">
+                                    ${shop.dishes.split(',').map(d => `• ${d.trim()}`).join('<br>')}
                                 </div>
                             </div>
-                            
                             <div class="update-time">
                                 📅 最后更新：${shop.updated}
                             </div>
                         </div>
                     `;
-
                     L.marker([shop.latitude, shop.longitude], { icon: foodIcon })
                         .bindPopup(popupContent)
                         .addTo(map);
                 });
+
+                // 移动端适配
+                if (window.innerWidth <= 768) {
+                    map.setView([35.8617, 104.1954], 3);
+                }
 
             } catch (error) {
                 console.error('加载数据失败:', error);
                 alert('无法加载地图数据，请检查网络连接');
             }
 
-            // 移动端适配
-            if (window.innerWidth <= 768) {
-                map.setView([35.8617, 104.1954], 3);
-            }
-
-
             // 显示内容区域
             document.querySelector('.content-wrapper').style.visibility = 'visible';
             document.querySelector('.content-wrapper').style.opacity = 1;
-        });
 
-        // 汉堡菜单交互
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('navMenu');
+            // 汉堡菜单交互
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
 
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        // 点击外部关闭菜单
-        document.addEventListener('click', (e) => {
-            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-            }
+            // 点击外部关闭菜单
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
         });
     </script>
 </body>

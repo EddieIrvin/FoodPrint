@@ -1,10 +1,12 @@
 [
   {
     "name": "test",
-    "address": "none",
-    "dishes": "none",
-    "latitude": 30.6,
+    "address": "test",
+    "dishes": "test",
+    "cuisine": "test",
+    "recommendation": "test",
+    "latitude": 30.5,
     "longitude": 104.1,
-    "updated": "2025-05-09 22:55:27"
+    "updated": "2025-05-10 00:01:08"
   }
 ]
