@@ -11,7 +11,8 @@
     
     <style>
         /* ========== 核心变量 ========== */
-        :root {
+        :root
+        {
             --primary-color: #ea945a;
             --xd-gray: #707070;
             --xd-white: #fff;
@@ -23,24 +24,28 @@
         }
 
         /* ========== 基础重置 ========== */
-        * {
+        *
+        {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html {
+        html
+        {
             scroll-behavior: smooth;
             scroll-padding-top: var(--nav-height);
         }
 
-        body {
+        body
+        {
             background: #f8f9fa;
             font-family: 'YuGothicUI-Regular', system-ui, -apple-system, sans-serif;
         }
 
         /* ========== 导航系统 ========== */
-        .navbar {
+        .navbar
+        {
             width: 100%;
             height: var(--nav-height);
             background: var(--primary-color);
@@ -53,7 +58,8 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .hamburger {
+        .hamburger
+        {
             width: 50px;
             height: 50px;
             border: 1px solid var(--xd-gray);
@@ -67,7 +73,8 @@
             display: none;
         }
 
-        .hamburger-line {
+        .hamburger-line
+        {
             position: absolute;
             left: 7px;
             width: 37px;
@@ -79,33 +86,48 @@
             will-change: transform, opacity;
         }
 
-        .hamburger-line:nth-child(1) { top: 8px; }
-        .hamburger-line:nth-child(2) { top: 22px; }
-        .hamburger-line:nth-child(3) { top: 36px; }
+        .hamburger-line:nth-child(1)
+        {
+            top: 8px;
+        }
+        .hamburger-line:nth-child(2)
+        {
+            top: 22px;
+        }
+        .hamburger-line:nth-child(3)
+        {
+            top: 36px;
+        }
 
-        .hamburger.active .hamburger-line:nth-child(1) {
+        .hamburger.active .hamburger-line:nth-child(1)
+        {
             transform: translateY(14px) rotate(45deg);
         }
-        .hamburger.active .hamburger-line:nth-child(2) {
+        .hamburger.active .hamburger-line:nth-child(2)
+        {
             opacity: 0;
             transform: translateX(-100%);
         }
-        .hamburger.active .hamburger-line:nth-child(3) {
+        .hamburger.active .hamburger-line:nth-child(3)
+        {
             transform: translateY(-14px) rotate(-45deg);
         }
 
-        .nav-menu {
+        .nav-menu
+        {
             margin-left: auto;
         }
 
-        .nav-menu ul {
+        .nav-menu ul
+        {
             list-style: none;
             display: flex;
             gap: 35px;
             padding: 0;
         }
 
-        .nav-menu a {
+        .nav-menu a
+        {
             color: var(--xd-white);
             text-decoration: none;
             font-size: 1.2rem;
@@ -115,7 +137,8 @@
         }
 
         .nav-menu a:focus,
-        .nav-menu a:hover {
+        .nav-menu a:hover
+        {
             background: rgba(255,255,255,0.15);
         }
         
@@ -124,7 +147,8 @@
             transform: scale(0.95);
         }
 
-        .logo {
+        .logo
+        {
             color: var(--xd-white);
             font: 40px/1 'Impact', sans-serif;
             letter-spacing: 0.15em;
@@ -132,7 +156,8 @@
         }
 
         /* ========== 内容区域 ========== */
-        .content-wrapper {
+        .content-wrapper
+        {
             margin: 100px auto 0;
             padding: var(--content-padding);
             width: 100%;
@@ -142,7 +167,8 @@
             visibility: hidden;
         }
 
-        .article-section {
+        .article-section
+        {
             background: white;
             border-radius: var(--card-radius);
             padding: 30px;
@@ -151,9 +177,9 @@
         }
 
         /* ========== 地图容器 ========== */
-        #chinaMap {
+        #chinaMap
+        {
             height: var(--map-height);
-            width: 100%;
             border-radius: var(--card-radius);
             margin: 10px 0;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -161,16 +187,25 @@
         }
 
         /* ========== 动画 ========== */
-        @keyframes contentFade {
+        @keyframes contentFade
+        {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         /* ========== 响应式设计 ========== */
-        @media (max-width: 768px) {
-            .navbar { padding: 0 20px; }
-            .hamburger { display: block; }
-            .nav-menu {
+        @media (max-width: 768px)
+        {
+            .navbar
+            {
+                padding: 0 20px;
+            }
+            .hamburger
+            {
+                display: block;
+            }
+            .nav-menu
+            {
                 position: absolute;
                 top: 100%;
                 left: 0;
@@ -182,12 +217,14 @@
                 visibility: hidden;
                 transition: all var(--menu-speed) ease;
             }
-            .nav-menu.active {
+            .nav-menu.active
+            {
                 transform: translateY(0);
                 opacity: 1;
                 visibility: visible;
             }
-            .nav-menu ul {
+            .nav-menu ul
+            {
                 flex-direction: column;
                 gap: 15px;
             }
@@ -198,13 +235,24 @@
             }
             .content-wrapper
             {
-                padding: 20px;
-                margin-left: 80px;
+                margin: 100px auto 0;
+                padding: 5px;
+                width: 100%;
+                height: 100%;
+                animation: contentFade 1s ease forwards;
+                opacity: 0;
+                visibility: hidden;
             }
-            #chinaMap { height: 400px; }
+            #chinaMap
+            {
+                padding: 0;
+                height: 520px;
+                width: 100%;
+            }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 480px)
+        {
             .logo
             {
                 font-size: 24pz;
@@ -214,7 +262,23 @@
             {
                 gap: 10pz;
             }
-            #chinaMap { height: 300px; }
+            
+            .content-wrapper
+            {
+                margin: 100px auto 0;
+                padding: 5px;
+                width: 100%;
+                height: 100%;
+                animation: contentFade 1s ease forwards;
+                opacity: 0;
+                visibility: hidden;
+            }
+            #chinaMap
+            {
+                padding: 0;
+                height: 520px;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -229,9 +293,9 @@
         <h1 class="logo">食途|FoodPrint</h1>
         <div class="nav-menu" id="navMenu">
             <ul>
-                <li><a href="/">首页</a></li>
-                <li><a href="#map">美食地图</a></li>
-                <li><a href="#recipes">食谱库</a></li>
+                <li><a href="https://eddieirvin.github.io/">首页</a></li>
+                <li><a href="#map">数据库</a></li>
+                <li><a href="#recipes">问题QA</a></li>
                 <li><a href="#contact">联系</a></li>
             </ul>
         </div>
@@ -248,36 +312,34 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         // 页面加载完成后初始化
-        window.addEventListener('load', () => {
-            // 初始化地图
-            const map = L.map('chinaMap', {
-                zoomControl: false,
-                attributionControl: false
-            }).setView([35.8617, 104.1954], 4);
+        window.addEventListener('load', async () => {
+        // 初始化地图
+        const map = L.map('chinaMap', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([35.8617, 104.1954], 4);
 
-            // 使用高德地图
-            L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}', {
-                subdomains: ['1','2','3','4'],
-                maxZoom: 18,
-                minZoom: 3
-            }).addTo(map);
+        // 使用高德地图
+        L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}', {
+            subdomains: ['1','2','3','4'],
+            maxZoom: 18,
+            minZoom: 3
+        }).addTo(map);
 
-            // 添加缩放控件
-            L.control.zoom({ position: 'bottomright' }).addTo(map);
+        // 添加缩放控件
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-            // 自定义图标
-            const foodIcon = L.icon({
-                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                iconSize: [32, 32],
-                popupAnchor: [0, -16]
-            });
+        // 自定义图标
+        const foodIcon = L.icon({
+            iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+            iconSize: [32, 32],
+            popupAnchor: [0, -16]
+        });
 
-            // 示例数据
-            const shops = [
-                { name: "北京全聚德", latlng: [39.9042, 116.4074], info: "📍 前门大街30号<br>🕒 10:00-21:00" },
-                { name: "广州陶陶居", latlng: [23.1193, 113.2580], info: "📍 第十甫路20号<br>🥟 招牌虾饺" },
-                { name: "成都陈麻婆", latlng: [30.6607, 104.0633], info: "📍 西玉龙街197号<br>🌶️ 麻婆豆腐" }
-            ];
+        try {
+            // 从外部JSON加载数据
+            const response = await fetch('data-shops.json');
+            const shops = await response.json();
 
             // 添加标记
             shops.forEach(shop => {
@@ -292,11 +354,15 @@
                     `)
                     .addTo(map);
             });
+        } catch (error) {
+            console.error('加载店铺数据失败:', error);
+            alert('无法加载地图数据，请稍后再试');
+        }
 
-            // 移动端适配
-            if (window.innerWidth <= 768) {
-                map.setView([35.8617, 104.1954], 3);
-            }
+        // 移动端适配
+        if (window.innerWidth <= 768) {
+            map.setView([35.8617, 104.1954], 3);
+        }
 
             // 显示内容区域
             document.querySelector('.content-wrapper').style.visibility = 'visible';
