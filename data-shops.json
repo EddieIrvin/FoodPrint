@@ -1,7 +1,10 @@
 [
-    {
-        "name": "这是个测试",
-        "latlng": [30.5,104],
-        "info": "成都"
-    }
+  {
+    "name": "test",
+    "address": "none",
+    "dishes": "none",
+    "latitude": 30.6,
+    "longitude": 104.1,
+    "updated": "2025-05-09 22:55:27"
+  }
 ]

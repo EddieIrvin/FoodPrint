@@ -154,6 +154,54 @@
             letter-spacing: 0.15em;
             user-select: none;
         }
+        
+        .leaflet-popup-content
+        {
+            margin: 12px !important;
+        }
+        
+        .shop-popup
+        {
+            min-width: 260px;
+            font-family: '微软雅黑', sans-serif;
+        }
+        
+        .shop-title
+        {
+            color: var(--primary-color);
+            margin: 0 0 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .info-item
+        {
+            margin: 8px 0;
+            display: flex;
+            align-items: start;
+        }
+        
+        .info-icon
+        {
+            width: 18px;
+            margin-right: 8px;
+            filter: hue-rotate(190deg);
+        }
+        
+        .dishes-list
+        {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .update-time
+        {
+            margin-top: 12px;
+            padding-top: 10px;
+            color: #999;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+        }
 
         /* ========== 内容区域 ========== */
         .content-wrapper
@@ -311,58 +359,75 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // 页面加载完成后初始化
         window.addEventListener('load', async () => {
-        // 初始化地图
-        const map = L.map('chinaMap', {
-            zoomControl: false,
-            attributionControl: false
-        }).setView([35.8617, 104.1954], 4);
+            const map = L.map('chinaMap', {
+                zoomControl: false,
+                attributionControl: false
+            }).setView([35.8617, 104.1954], 4);
 
-        // 使用高德地图
-        L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}', {
-            subdomains: ['1','2','3','4'],
-            maxZoom: 18,
-            minZoom: 3
-        }).addTo(map);
+            // 地图图层
+            L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}', {
+                subdomains: ['1','2','3','4'],
+                maxZoom: 18,
+                minZoom: 3
+            }).addTo(map);
 
-        // 添加缩放控件
-        L.control.zoom({ position: 'bottomright' }).addTo(map);
-
-        // 自定义图标
-        const foodIcon = L.icon({
-            iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-            iconSize: [32, 32],
-            popupAnchor: [0, -16]
-        });
-
-        try {
-            // 从外部JSON加载数据
-            const response = await fetch('data-shops.json');
-            const shops = await response.json();
-
-            // 添加标记
-            shops.forEach(shop => {
-                L.marker(shop.latlng, { icon: foodIcon })
-                    .bindPopup(`
-                        <div style="min-width:200px;padding:8px;font-family:system-ui;">
-                            <h3 style="margin:0 0 6px;color:${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}">
-                                ${shop.name}
-                            </h3>
-                            <p style="margin:0;font-size:14px;">${shop.info}</p>
-                        </div>
-                    `)
-                    .addTo(map);
+            // 自定义图标
+            const foodIcon = L.icon({
+                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                iconSize: [32, 32],
+                popupAnchor: [0, -16]
             });
-        } catch (error) {
-            console.error('加载店铺数据失败:', error);
-            alert('无法加载地图数据，请稍后再试');
-        }
 
-        // 移动端适配
-        if (window.innerWidth <= 768) {
-            map.setView([35.8617, 104.1954], 3);
-        }
+            try {
+                const response = await fetch('data-shops.json');
+                const shops = await response.json();
+
+                shops.forEach(shop => {
+                    const popupContent = `
+                        <div class="shop-popup">
+                            <h3 class="shop-title">${shop.name}</h3>
+                            
+                            <div class="info-item">
+                                <img src="https://cdn-icons-png.flaticon.com/512/149/149060.png" 
+                                     class="info-icon">
+                                ${shop.address}
+                            </div>
+                            
+                            <div class="info-item">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" 
+                                     class="info-icon">
+                                <div>
+                                    <div style="color:${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}">
+                                        推荐菜品：
+                                    </div>
+                                    <div class="dishes-list">
+                                        ${shop.dishes.split(',').map(d => `• ${d.trim()}`).join('<br>')}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="update-time">
+                                📅 最后更新：${shop.updated}
+                            </div>
+                        </div>
+                    `;
+
+                    L.marker([shop.latitude, shop.longitude], { icon: foodIcon })
+                        .bindPopup(popupContent)
+                        .addTo(map);
+                });
+
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                alert('无法加载地图数据，请检查网络连接');
+            }
+
+            // 移动端适配
+            if (window.innerWidth <= 768) {
+                map.setView([35.8617, 104.1954], 3);
+            }
+
 
             // 显示内容区域
             document.querySelector('.content-wrapper').style.visibility = 'visible';
