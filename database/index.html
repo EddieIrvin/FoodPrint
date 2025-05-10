@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#ea945a">
-    <title>食途|美食数据库</title>
+    <title>食途|DataBase</title>
     <style>
         /* ========== 核心变量 ========== */
         :root {
@@ -46,6 +46,7 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
 
         .hamburger {
@@ -60,6 +61,11 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             display: none;
+            transition: transform 0.2s ease;
+        }
+
+        .hamburger:active {
+            transform: scale(0.95);
         }
 
         .hamburger-line {
@@ -71,6 +77,7 @@
             border-radius: 2.5px;
             transition: all var(--menu-speed) cubic-bezier(0.68, -0.55, 0.27, 1.55);
             transform-origin: 18.5px 2.5px;
+            will-change: transform, opacity;
         }
 
         .hamburger-line:nth-child(1) { top: 8px; }
@@ -106,14 +113,17 @@
             transition: transform 0.2s ease;
             padding: 8px 12px;
             border-radius: 6px;
+            outline: none;
         }
 
+        .nav-menu a:focus,
         .nav-menu a:hover {
             background: rgba(255,255,255,0.15);
         }
 
         .nav-menu a.active {
             background: rgba(255,255,255,0.2);
+            transform: scale(0.95);
         }
 
         .logo {
@@ -121,6 +131,7 @@
             font: 40px/1 'Impact', sans-serif;
             letter-spacing: 0.15em;
             user-select: none;
+            transition: font-size 0.3s ease;
         }
 
         /* ========== 数据库样式 ========== */
@@ -315,7 +326,7 @@
 
     <!-- 导航栏 -->
     <nav class="navbar">
-        <button class="hamburger" id="hamburger" aria-label="菜单">
+        <button class="hamburger" id="hamburger" aria-label="菜单" aria-expanded="false">
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
@@ -324,7 +335,7 @@
         <div class="nav-menu" id="navMenu">
             <ul>
                 <li><a href="https://eddieirvin.github.io/">首页</a></li>
-                <li><a href="#database" class="active">数据库</a></li>
+                <li><a href="https://eddieirvin.github.io/FoodPrint/">食途|FoodPrint</a></li>
                 <li><a href="#recipes">问题QA</a></li>
                 <li><a href="#contact">联系</a></li>
             </ul>
@@ -337,18 +348,35 @@
     </main>
 
     <script>
-        window.addEventListener('load', async () => {
-            // 导航栏交互
-            const hamburger = document.getElementById('hamburger');
-            const navMenu = document.getElementById('navMenu');
-            
-            // 汉堡菜单点击事件
-            hamburger.addEventListener('click', () => {
-                hamburger.classList.toggle('active');
-                navMenu.classList.toggle('active');
-            });
+        // 导航交互
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        
+        const toggleMenu = (state) => {
+            const isExpanded = state ?? hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active', isExpanded);
+            hamburger.setAttribute('aria-expanded', isExpanded);
+        };
 
-            // 视图切换功能
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMenu();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                toggleMenu(false);
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                toggleMenu(false);
+            }
+        });
+
+        // 数据加载和视图切换
+        window.addEventListener('load', async () => {
             const viewButtons = document.querySelectorAll('.view-btn');
             const container = document.getElementById('databaseContainer');
             
@@ -360,14 +388,11 @@
                 });
             });
 
-            // 加载数据
             try {
                 const response = await fetch('data-shops.json');
                 const shops = await response.json();
                 
-                const container = document.getElementById('databaseContainer');
-                container.innerHTML = ''; // 清空容器
-
+                container.innerHTML = '';
                 shops.forEach(shop => {
                     const card = document.createElement('div');
                     card.className = 'shop-card';
@@ -410,7 +435,6 @@
 
             } catch (error) {
                 console.error('数据加载失败:', error);
-                const container = document.getElementById('databaseContainer');
                 container.innerHTML = `
                     <div class="shop-card" style="text-align:center; color:var(--primary-color)">
                         <h2>⚠️ 数据加载失败</h2>
@@ -419,14 +443,6 @@
                     </div>
                 `;
             }
-
-            // 点击外部关闭菜单
-            document.addEventListener('click', (e) => {
-                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-                    hamburger.classList.remove('active');
-                    navMenu.classList.remove('active');
-                }
-            });
         });
     </script>
 </body>
