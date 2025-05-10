@@ -19,7 +19,7 @@ class JsonManagerApp:
 
     def setup_ui(self):
         """初始化用户界面"""
-        self.master.title("美食地图数据管理")
+        self.master.title("FoodPrint Data Server--FDS 1.1.1")
         self.master.geometry("1280x720")  # 固定初始尺寸
 
         # 主容器（左右分割比例4:1）
