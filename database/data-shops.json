@@ -28,5 +28,15 @@
     "latitude": 12.0,
     "longitude": 12.0,
     "updated": "2025-05-10 13:42:40"
+  },
+  {
+    "name": "红萍家老板铺",
+    "address": "广西壮族自治区南宁市青秀区悦宾路2栋6号",
+    "dishes": "蹄花",
+    "cuisine": "川菜",
+    "recommendation": "好吃",
+    "latitude": 22.82,
+    "longitude": 108.38,
+    "updated": "2025-05-10 16:23:07"
   }
 ]
