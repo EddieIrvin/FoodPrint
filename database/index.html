@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#ea945a">
+    <title>食途|美食数据库</title>
+    <style>
+        /* ========== 核心变量 ========== */
+        :root {
+            --primary-color: #ea945a;
+            --xd-gray: #707070;
+            --xd-white: #fff;
+            --nav-height: 89px;
+            --menu-speed: 0.3s;
+            --content-padding: 20px;
+            --card-radius: 12px;
+            --map-height: 650px;
+        }
+
+        /* ========== 基础重置 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--nav-height);
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: '微软雅黑', sans-serif;
+        }
+
+        /* ========== 导航系统 ========== */
+        .navbar {
+            width: 100%;
+            height: var(--nav-height);
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            padding: 0 45px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .hamburger {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--xd-gray);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            background: var(--primary-color);
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            display: none;
+        }
+
+        .hamburger-line {
+            position: absolute;
+            left: 7px;
+            width: 37px;
+            height: 5px;
+            background: var(--xd-gray);
+            border-radius: 2.5px;
+            transition: all var(--menu-speed) cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transform-origin: 18.5px 2.5px;
+        }
+
+        .hamburger-line:nth-child(1) { top: 8px; }
+        .hamburger-line:nth-child(2) { top: 22px; }
+        .hamburger-line:nth-child(3) { top: 36px; }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: translateY(14px) rotate(45deg);
+        }
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: translateY(-14px) rotate(-45deg);
+        }
+
+        .nav-menu {
+            margin-left: auto;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            gap: 35px;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            color: var(--xd-white);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .nav-menu a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .logo {
+            color: var(--xd-white);
+            font: 40px/1 'Impact', sans-serif;
+            letter-spacing: 0.15em;
+            user-select: none;
+        }
+
+        /* ========== 数据库样式 ========== */
+        .content-wrapper {
+            margin: 100px auto 0;
+            padding: var(--content-padding);
+            width: 100%;
+            animation: contentFade 1s ease forwards;
+        }
+
+        .database-container {
+            display: grid;
+            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        }
+
+        .shop-card {
+            background: var(--xd-white);
+            border-radius: var(--card-radius);
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .shop-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .shop-header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .shop-title {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin: 0 0 8px;
+        }
+
+        .shop-meta {
+            color: var(--xd-gray);
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-section {
+            margin: 15px 0;
+        }
+
+        .info-label {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin: 10px 0 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-content {
+            color: #666;
+            line-height: 1.6;
+            padding-left: 28px;
+        }
+
+        .dishes-list {
+            columns: 2;
+            margin: 10px 0;
+        }
+
+        /* ========== 动画 ========== */
+        @keyframes contentFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== 响应式设计 ========== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+            .hamburger {
+                display: block;
+            }
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--primary-color);
+                padding: 20px;
+                transform: translateY(-20px);
+                opacity: 0;
+                visibility: hidden;
+                transition: all var(--menu-speed) ease;
+            }
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            .nav-menu ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .logo {
+                font-size: 28px;
+                margin-left: 20px;
+            }
+            .dishes-list {
+                columns: 1;
+            }
+            .database-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 24px;
+                margin-left: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <button class="hamburger" id="hamburger" aria-label="菜单">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+        <h1 class="logo">食途|FoodPrint</h1>
+        <div class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="https://eddieirvin.github.io/">首页</a></li>
+                <li><a href="#database" class="active">数据库</a></li>
+                <li><a href="#recipes">问题QA</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 数据库内容 -->
+    <main class="content-wrapper">
+        <div class="database-container" id="databaseContainer"></div>
+    </main>
+
+    <script>
+        window.addEventListener('load', async () => {
+            // 导航栏交互
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            // 点击外部关闭菜单
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+
+            // 加载数据
+            try {
+                const response = await fetch('data-shops.json');
+                const shops = await response.json();
+                const container = document.getElementById('databaseContainer');
+
+                shops.forEach(shop => {
+                    const card = document.createElement('div');
+                    card.className = 'shop-card';
+                    card.innerHTML = `
+                        <div class="shop-header">
+                            <h2 class="shop-title">${shop.name}</h2>
+                            <div class="shop-meta">
+                                <span>📍 ${shop.address}</span>
+                                <span>📅 ${shop.updated}</span>
+                            </div>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-label">
+                                <img src="https://cdn-icons-png.flaticon.com/512/484/484613.png" width="20">
+                                菜系类型
+                            </div>
+                            <div class="info-content">${shop.cuisine || "暂无分类"}</div>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-label">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="20">
+                                推荐理由
+                            </div>
+                            <div class="info-content">${shop.recommendation || "暂无推荐理由"}</div>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-label">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" width="20">
+                                推荐菜品
+                            </div>
+                            <div class="dishes-list">${shop.dishes.split(/[，,]/).map(dish => `
+                                <div class="dish-item">🍲 ${dish.trim()}</div>
+                            `).join('')}</div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('数据加载失败:', error);
+                const container = document.getElementById('databaseContainer');
+                container.innerHTML = `<div class="shop-card" style="text-align:center; color:var(--primary-color)">
+                    <h2>⚠️ 数据加载失败，请刷新重试</h2>
+                    <p>${error.message}</p>
+                </div>`;
+            }
+        });
+    </script>
+</body>
+</html>

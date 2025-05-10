@@ -123,13 +123,18 @@
 
         /* ========== 地图弹窗样式 ========== */
         .leaflet-popup-content {
-            margin: 12px !important;
+            margin: 15px !important;
+            min-width: 280px !important; /* 新增最小宽度 */
+            max-width: 90vw !important; /* 响应式宽度限制 */
         }
 
         .shop-popup {
-            min-width: 320px;
             font-family: '微软雅黑', sans-serif;
+            word-break: break-word !important; /* 强制断词 */
+            overflow-wrap: anywhere !important; /* 智能换行 */
+            hyphens: auto !important; /* 连字符支持 */
         }
+
 
         .shop-title {
             color: var(--primary-color);
@@ -141,18 +146,32 @@
         .info-item {
             margin: 12px 0;
             display: flex;
-            align-items: start;
+            align-items: flex-start; /* 顶部对齐 */
+            gap: 10px;
+            min-width: 0; /* 修复flex溢出 */
         }
 
         .info-icon {
             width: 20px;
-            margin-right: 10px;
+            margin-right: 0;
             filter: hue-rotate(190deg);
+            flex-shrink: 0;
         }
 
+        .dish-wrapper {
+            flex: 1;
+            min-width: 0; /* 防止内容溢出 */
+        }
+        .dish-title {
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
         .dishes-list {
-            margin: 8px 0 12px;
+            line-height: 1.6 !important;
+            margin: 0;
             color: #666;
+            white-space: pre-line !important; /* 保留换行符 */
+            word-break: break-word !important;
         }
 
         .update-time {
@@ -234,9 +253,6 @@
                 font-size: 24px;
                 margin-left: 15px;
             }
-            .shop-popup {
-                min-width: 260px;
-            }
         }
     </style>
 </head>
@@ -286,7 +302,7 @@
             });
 
             try {
-                const response = await fetch('data-shops.json');
+                const response = await fetch('database/data-shops.json');
                 const shops = await response.json();
                 
                 // 添加标记
@@ -308,9 +324,11 @@
                             </div>
                             <div class="info-item">
                                 <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" class="info-icon">
-                                <div style="color:var(--primary-color)">推荐菜品：</div>
-                                <div class="dishes-list">
-                                    ${shop.dishes.split(',').map(d => `• ${d.trim()}`).join('<br>')}
+                                <div class="dish-wrapper">
+                                    <div class="dish-title">推荐菜品：</div>
+                                    <div class="dishes-list">
+                                        ${shop.dishes.replace(/(,|，)/g, '<br>')} <!-- 兼容中英文逗号 -->
+                                    </div>
                                 </div>
                             </div>
                             <div class="update-time">
