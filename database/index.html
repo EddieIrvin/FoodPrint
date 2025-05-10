@@ -362,7 +362,7 @@
 
             // 加载数据
             try {
-                const response = await fetch('database/data-shops.json');
+                const response = await fetch('data-shops.json');
                 const shops = await response.json();
                 
                 const container = document.getElementById('databaseContainer');
