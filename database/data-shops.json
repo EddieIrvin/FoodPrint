@@ -18,5 +18,15 @@
     "latitude": 30.5,
     "longitude": 104.1,
     "updated": "2025-05-10 13:18:30"
+  },
+  {
+    "name": "红萍家",
+    "address": "123123",
+    "dishes": "123",
+    "cuisine": "123",
+    "recommendation": "123",
+    "latitude": 12.0,
+    "longitude": 12.0,
+    "updated": "2025-05-10 13:42:40"
   }
 ]
