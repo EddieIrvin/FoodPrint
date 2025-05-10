@@ -28,5 +28,15 @@
     "latitude": 30.607786,
     "longitude": 104.117,
     "updated": "2025-05-10 19:41:16"
+  },
+  {
+    "name": "味冕生料馆（总店）",
+    "address": "广西壮族自治区南宁市青秀区琅东十二组8栋6号一楼铺面",
+    "dishes": "N/A",
+    "cuisine": "生料",
+    "recommendation": "香！",
+    "latitude": 22.815428,
+    "longitude": 108.374998,
+    "updated": "2025-05-10 19:55:32"
   }
 ]
