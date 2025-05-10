@@ -1,42 +1,22 @@
 [
   {
-    "name": "test123123",
-    "address": "test123123",
-    "dishes": "test123123",
-    "cuisine": "test1123123123123123123123123123123123123123123123123123",
-    "recommendation": "123123123123123123123123123123123123",
-    "latitude": 30.6130555555555,
-    "longitude": 104.122777777777,
-    "updated": "2025-05-10 11:19:22"
-  },
-  {
-    "name": "test",
-    "address": "test",
-    "dishes": "test",
-    "cuisine": "test",
-    "recommendation": "test",
-    "latitude": 30.5,
-    "longitude": 104.1,
-    "updated": "2025-05-10 13:18:30"
-  },
-  {
-    "name": "红萍家",
-    "address": "123123",
-    "dishes": "123",
-    "cuisine": "123",
-    "recommendation": "123",
-    "latitude": 12.0,
-    "longitude": 12.0,
-    "updated": "2025-05-10 13:42:40"
-  },
-  {
     "name": "红萍家老板铺",
     "address": "广西壮族自治区南宁市青秀区悦宾路2栋6号",
     "dishes": "蹄花",
     "cuisine": "川菜",
     "recommendation": "好吃",
-    "latitude": 22.82,
-    "longitude": 108.38,
-    "updated": "2025-05-10 16:23:07"
+    "latitude": 22.815341,
+    "longitude": 108.37594,
+    "updated": "2025-05-10 16:27:03"
+  },
+  {
+    "name": "矮板凳老火锅（航空港店）",
+    "address": "四川省成都市双流区航空港黄河中路蓝光国际城停车配套楼105号",
+    "dishes": "N/A",
+    "cuisine": "火锅",
+    "recommendation": "性价比不错，味道挺好",
+    "latitude": 30.571069,
+    "longitude": 104.004103,
+    "updated": "2025-05-10 16:31:40"
   }
 ]
