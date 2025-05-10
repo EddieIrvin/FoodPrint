@@ -15,7 +15,6 @@
             --menu-speed: 0.3s;
             --content-padding: 20px;
             --card-radius: 12px;
-            --map-height: 650px;
         }
 
         /* ========== 基础重置 ========== */
@@ -126,7 +125,7 @@
 
         /* ========== 数据库样式 ========== */
         .content-wrapper {
-            margin: 100px auto 0;
+            margin: 140px auto 0;
             padding: var(--content-padding);
             width: 100%;
             animation: contentFade 1s ease forwards;
@@ -170,6 +169,7 @@
             align-items: center;
         }
 
+        /* ========== 信息区块 ========== */
         .info-section {
             margin: 15px 0;
         }
@@ -187,11 +187,64 @@
             color: #666;
             line-height: 1.6;
             padding-left: 28px;
+            word-wrap: break-word;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .dishes-list {
-            columns: 2;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
             margin: 10px 0;
+        }
+
+        .dish-item {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 4px 8px;
+            background: rgba(234,148,90,0.1);
+            border-radius: 4px;
+        }
+
+        /* ========== 视图切换 ========== */
+        .view-toggle {
+            position: fixed;
+            top: 110px;
+            right: 30px;
+            z-index: 500;
+            display: flex;
+            gap: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .view-btn {
+            padding: 8px 15px;
+            border: 1px solid var(--xd-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* 列表视图样式 */
+        .database-container.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .database-container.list-view .shop-card {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
         }
 
         /* ========== 动画 ========== */
@@ -233,11 +286,12 @@
                 font-size: 28px;
                 margin-left: 20px;
             }
-            .dishes-list {
-                columns: 1;
+            .view-toggle {
+                top: 100px;
+                right: 15px;
             }
-            .database-container {
-                grid-template-columns: 1fr;
+            .database-container.list-view .shop-card {
+                padding: 15px;
             }
         }
 
@@ -246,10 +300,19 @@
                 font-size: 24px;
                 margin-left: 15px;
             }
+            .shop-card {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 视图切换 -->
+    <div class="view-toggle">
+        <div class="view-btn active" data-view="grid">网格视图</div>
+        <div class="view-btn" data-view="list">列表视图</div>
+    </div>
+
     <!-- 导航栏 -->
     <nav class="navbar">
         <button class="hamburger" id="hamburger" aria-label="菜单">
@@ -279,24 +342,31 @@
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             
+            // 汉堡菜单点击事件
             hamburger.addEventListener('click', () => {
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
             });
 
-            // 点击外部关闭菜单
-            document.addEventListener('click', (e) => {
-                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-                    hamburger.classList.remove('active');
-                    navMenu.classList.remove('active');
-                }
+            // 视图切换功能
+            const viewButtons = document.querySelectorAll('.view-btn');
+            const container = document.getElementById('databaseContainer');
+            
+            viewButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    viewButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    container.className = `database-container ${btn.dataset.view}-view`;
+                });
             });
 
             // 加载数据
             try {
-                const response = await fetch('data-shops.json');
+                const response = await fetch('database/data-shops.json');
                 const shops = await response.json();
+                
                 const container = document.getElementById('databaseContainer');
+                container.innerHTML = ''; // 清空容器
 
                 shops.forEach(shop => {
                     const card = document.createElement('div');
@@ -328,9 +398,11 @@
                                 <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" width="20">
                                 推荐菜品
                             </div>
-                            <div class="dishes-list">${shop.dishes.split(/[，,]/).map(dish => `
-                                <div class="dish-item">🍲 ${dish.trim()}</div>
-                            `).join('')}</div>
+                            <div class="dishes-list">
+                                ${shop.dishes.split(/[，,]/).map(dish => `
+                                    <div class="dish-item">🍲 ${dish.trim()}</div>
+                                `).join('')}
+                            </div>
                         </div>
                     `;
                     container.appendChild(card);
@@ -339,11 +411,22 @@
             } catch (error) {
                 console.error('数据加载失败:', error);
                 const container = document.getElementById('databaseContainer');
-                container.innerHTML = `<div class="shop-card" style="text-align:center; color:var(--primary-color)">
-                    <h2>⚠️ 数据加载失败，请刷新重试</h2>
-                    <p>${error.message}</p>
-                </div>`;
+                container.innerHTML = `
+                    <div class="shop-card" style="text-align:center; color:var(--primary-color)">
+                        <h2>⚠️ 数据加载失败</h2>
+                        <p>${error.message}</p>
+                        <p>请检查网络连接后刷新页面</p>
+                    </div>
+                `;
             }
+
+            // 点击外部关闭菜单
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
         });
     </script>
 </body>
